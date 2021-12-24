@@ -40,7 +40,7 @@ class QAExplainer:
         }
 
     def _shap_func(self, inputs, start):
-        """Processing of inputs to generate logits, that are ingested by shap"""
+        """Processing of inputs to generate logits, that are ingested by SHAP"""
         outs = []
         for data in inputs:
             question, context = data.split("[SEP]")
