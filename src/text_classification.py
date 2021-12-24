@@ -1,8 +1,13 @@
+"""Explain Text Classification module"""
 import shap
 import transformers
 
 
 def get_explainer(model_path: str):
+    """
+    Loads model and tokenizer in a pipeline and creates and returns a
+    SHAP Explainer from the pipeline
+    """
     # load the model and tokenizer
     tokenizer = transformers.AutoTokenizer.from_pretrained(model_path,
                                                            use_fast=True)

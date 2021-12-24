@@ -1,3 +1,5 @@
+"""main.py"""
+
 from src import text_classification
 
 model_path = "nateraw/bert-base-uncased-emotion"
