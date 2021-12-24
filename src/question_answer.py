@@ -6,6 +6,8 @@ from typing import List
 
 
 class QAExplainer:
+    """Explains QA models using SHAP"""
+
     def __init__(self, model_path):
         self._setup_explainer(model_path)
 
@@ -45,9 +47,10 @@ class QAExplainer:
         for data in inputs:
             question, context = data.split("[SEP]")
             d = self.tokenizer(question, context)
-            out = self.model.forward(
-                **{k: torch.tensor(d[k]).reshape(1, -1) for k in d}
-            )
+            with torch.no_grad():
+                out = self.model.forward(
+                    **{k: torch.tensor(d[k]).reshape(1, -1) for k in d}
+                )
             logits = out.start_logits if start else out.end_logits
             outs.append(logits.reshape(-1).detach().numpy())
         return outs
