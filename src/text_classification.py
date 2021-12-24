@@ -2,7 +2,7 @@ import shap
 import transformers
 
 
-def get_explainer(model_path: str, task: str):
+def get_explainer(model_path: str):
     # load the model and tokenizer
     tokenizer = transformers.AutoTokenizer.from_pretrained(model_path,
                                                            use_fast=True)
@@ -10,7 +10,7 @@ def get_explainer(model_path: str, task: str):
         model_path)
 
     # build a pipeline object to do predictions
-    pred = transformers.pipeline(task,
+    pred = transformers.pipeline("text-classification",
                                  model=model,
                                  tokenizer=tokenizer,
                                  return_all_scores=True)
