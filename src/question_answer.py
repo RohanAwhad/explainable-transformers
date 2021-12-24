@@ -31,7 +31,7 @@ class QAExplainer:
         Explains predictions of inputs using SHAP
         and the model from model_path provided
         """
-        if self.model_path != model_path:
+        if model_path and self.model_path != model_path:
             self._setup_explainer(model_path)
 
         return {
