@@ -1,27 +1,40 @@
 """Explain Text Classification module"""
 import shap
+import streamlit as st
 import transformers
 
 
-def get_explainer(model_path: str):
-    """
-    Loads model and tokenizer in a pipeline and creates and returns a
-    SHAP Explainer from the pipeline
-    """
-    # load the model and tokenizer
-    tokenizer = transformers.AutoTokenizer.from_pretrained(
-        model_path, use_fast=True
-    )
-    model = transformers.AutoModelForSequenceClassification.from_pretrained(
-        model_path
-    )
+class TextClassificationExplainer:
+    """Explains Text Classification models using SHAP"""
 
-    # build a pipeline object to do predictions
-    pred = transformers.pipeline(
-        "text-classification",
-        model=model,
-        tokenizer=tokenizer,
-        return_all_scores=True,
-    )
+    def __init__(self, model_path: str):
+        self._setup_explainer(model_path)
 
-    return shap.Explainer(pred)
+    def _setup_explainer(self, model_path: str):
+        """
+        Loads model and tokenizer in a pipeline and
+        initialises SHAP Explainer using the pipeline
+        """
+        # load the model and tokenizer
+        tokenizer = transformers.AutoTokenizer.from_pretrained(
+            model_path, use_fast=True
+        )
+        model = transformers.AutoModelForSequenceClassification.from_pretrained(
+            model_path
+        )
+
+        # build a pipeline object to do predictions
+        pred = transformers.pipeline(
+            "text-classification",
+            model=model,
+            tokenizer=tokenizer,
+            return_all_scores=True,
+        )
+
+        self.explainer = shap.Explainer(pred)
+
+    def explain(self, inputs, model_path=None):
+        """
+        Explains predictions of inputs using SHAP Explainer
+        """
+        return {"shap_values": self.explainer(inputs)}

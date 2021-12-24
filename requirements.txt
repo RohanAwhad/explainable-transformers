@@ -1,4 +1,6 @@
 numpy
 shap
+streamlit
 transformers
 torch
+matplotlib
