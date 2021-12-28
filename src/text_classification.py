@@ -8,13 +8,6 @@ class TextClassificationExplainer:
     """Explains Text Classification models using SHAP"""
 
     def __init__(self, model_path: str):
-        self._setup_explainer(model_path)
-
-    def _setup_explainer(self, model_path: str):
-        """
-        Loads model and tokenizer in a pipeline and
-        initialises SHAP Explainer using the pipeline
-        """
         # load the model and tokenizer
         tokenizer = transformers.AutoTokenizer.from_pretrained(
             model_path, use_fast=True
@@ -33,7 +26,7 @@ class TextClassificationExplainer:
 
         self.explainer = shap.Explainer(pred)
 
-    def explain(self, inputs, model_path=None):
+    def explain(self, inputs):
         """
         Explains predictions of inputs using SHAP Explainer
         """
