@@ -1,4 +1,5 @@
 """Explain Text Classification module"""
+import pandas as pd
 import shap
 import streamlit as st
 import transformers
@@ -17,17 +18,28 @@ class TextClassificationExplainer:
         )
 
         # build a pipeline object to do predictions
-        pred = transformers.pipeline(
+        self.pred = transformers.pipeline(
             "text-classification",
             model=model,
             tokenizer=tokenizer,
             return_all_scores=True,
         )
 
-        self.explainer = shap.Explainer(pred)
+        self.explainer = shap.Explainer(self.pred)
 
-    def explain(self, inputs):
+    def get_shap_values(self, inputs):
         """
         Explains predictions of inputs using SHAP Explainer
         """
         return {"shap_values": self.explainer(inputs)}
+
+    def get_predictions(self, inputs):
+        """Return predictions from model"""
+
+        predictions = self.pred(inputs)
+        return pd.DataFrame(
+            {
+                "labels": [output["label"] for output in predictions[0]],
+                "scores": [output["score"] for output in predictions[0]],
+            }
+        )

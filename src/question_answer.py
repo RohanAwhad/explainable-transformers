@@ -28,7 +28,7 @@ class QAExplainer:
             self.tokenizer,
         )
 
-    def explain(self, inputs: List[str]):
+    def get_shap_values(self, inputs: List[str]):
         """Explains predictions of inputs using SHAP and the model provided"""
         return {
             "start_shap_values": self.explainer_start(inputs),
