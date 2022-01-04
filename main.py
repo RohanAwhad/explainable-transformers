@@ -51,37 +51,30 @@ elif task == "Question Answering":
     context = st.text_area("Enter context")
     inputs = [question + "[SEP]" + context]
 
-try:
-    shap_values, predictions = get_shap_values_and_predictions(
-        task, model_path, inputs
-    )
+shap_values, predictions = get_shap_values_and_predictions(
+    task, model_path, inputs
+)
 
-    st.write("## Prediction")
-    st.dataframe(predictions)
+st.write("## Prediction")
+st.dataframe(predictions)
 
-    st.write("## Text Plot")
-    if task == "Text Classification":
-        st_shap(shap.plots.text(shap_values["shap_values"][0], display=False))
-    elif task == "Question Answering":
-        st.write("### Start ")
+st.write("## Text Plot")
+if task == "Text Classification":
+    st_shap(shap.plots.text(shap_values["shap_values"][0], display=False))
+elif task == "Question Answering":
+    st.write("### Start ")
+    st_shap(shap.plots.text(shap_values["start_shap_values"][0], display=False))
+    st.write("### End ")
+    st_shap(shap.plots.text(shap_values["end_shap_values"][0], display=False))
+
+if task == "Text Classification":
+    st.write("## Waterfall Plot")
+    output_names = shap_values["shap_values"].output_names
+    output_col, plot_col = st.columns([1, 3])
+    col = output_col.radio("Select one output", output_names)
+    with plot_col:
         st_shap(
-            shap.plots.text(shap_values["start_shap_values"][0], display=False)
-        )
-        st.write("### End ")
-        st_shap(
-            shap.plots.text(shap_values["end_shap_values"][0], display=False)
-        )
-
-    if task == "Text Classification":
-        st.write("## Waterfall Plot")
-        output_names = shap_values["shap_values"].output_names
-        output_col, plot_col = st.columns([1, 3])
-        col = output_col.radio("Select one output", output_names)
-        with plot_col:
-            st_shap(
-                shap_bugs.waterfall(
-                    shap_values["shap_values"][0, :, col], show=False
-                )
+            shap_bugs.waterfall(
+                shap_values["shap_values"][0, :, col], show=False
             )
-except Exception as e:
-    print(e)
+        )
