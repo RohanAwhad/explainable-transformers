@@ -1,6 +1,7 @@
 import transformers
 import torch
 import shap
+import pandas as pd
 
 from typing import List
 
@@ -14,6 +15,9 @@ class QAExplainer:
         )
         self.model = transformers.AutoModelForQuestionAnswering.from_pretrained(
             model_path
+        )
+        self.pipeline = transformers.QuestionAnsweringPipeline(
+            model=self.model, tokenizer=self.tokenizer
         )
 
         self._start_shap_func.__func__.output_names = self._out_names
@@ -59,3 +63,14 @@ class QAExplainer:
         question, context = inputs.split("[SEP]")
         d = self.tokenizer(question, context)
         return [self.tokenizer.decode([id]) for id in d["input_ids"]]
+
+    def get_predictions(self, inputs):
+        question, context = inputs[0].split("[SEP]")
+        predictions = self.pipeline(question=question, context=context)
+        print(predictions)
+        return pd.DataFrame(
+            {
+                "answer": [predictions["answer"]],
+                "score": [predictions["score"]],
+            }
+        )
