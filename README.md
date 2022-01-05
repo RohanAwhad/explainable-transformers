@@ -26,3 +26,15 @@ streamlit run main.py
     2.  Download option for shap values of dataset
 
 -   Support for multiple model types and NLP tasks!
+
+## Output
+
+Package?
+
+-   Access to classes is possible -> Collaborated Development
+
+Docker container?
+
+-   Will provide a link to streamlit website -> Usage out of the box
+
+Or Both?
