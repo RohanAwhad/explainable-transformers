@@ -17,12 +17,13 @@ streamlit run main.py
     For single example:
 
     -   Output is for local
+    -   Text Plot is enough
 
     Entire Dataset:
     _ Reason: To explain model outputs on a global scale
     _ Output:
 
-    1.  A plot for global values (Required)
+    1.  A plot for global values (Required): Waterfall Plot!
     2.  Download option for shap values of dataset
 
 -   Support for multiple model types and NLP tasks!
