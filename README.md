@@ -13,6 +13,7 @@ streamlit run main.py
 ## Future Scope:
 
 -   Want to give an option to enter either a single example or an entire dataset!
+
     For single example:
 
     -   Output is for local
