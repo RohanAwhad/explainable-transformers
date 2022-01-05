@@ -1,6 +1,8 @@
 """main.py"""
 
 import matplotlib
+import requests
+from requests.models import HTTPError
 import shap
 
 import streamlit as st
@@ -42,10 +44,17 @@ task = st.selectbox("Task", ["Text Classification", "Question Answering"])
 model_path = st.text_input(
     "HuggingFace Model Path", "nateraw/bert-base-uncased-emotion"
 )
+dataset_link = st.text_input("Dataset link")
 if task == "Text Classification":
+    st.caption(
+        "The link should point to a text file with each input example separated by newline (\\n)"
+    )
     text = st.text_area("Enter input for model", "I am Happy!")
     inputs = [text] if text else []
 elif task == "Question Answering":
+    st.caption(
+        "The link should point to a CSV with 2 columns: question and context."
+    )
     question = st.text_area("Enter question")
     context = st.text_area("Enter context")
 
@@ -53,8 +62,21 @@ elif task == "Question Answering":
 
 try:
     # Validation Conditions
+    if dataset_link:
+        if task == "Text Classification":
+            res = requests.get(dataset_link)
+            if res.status_code != 200:
+                raise HTTPError(
+                    f"Error {res.status_code}: Unable to fetch file at {dataset_link}"
+                )
+
+            inputs = res.text.split("\n")
+
+            while "" in inputs:
+                inputs.remove("")
+
     if len(inputs) == 0:
-        raise ValueError
+        raise ValueError("Input is incomplete")
 
     # Operations
     shap_values, predictions = get_shap_values_and_predictions(
