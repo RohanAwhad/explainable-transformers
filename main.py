@@ -79,17 +79,6 @@ try:
             shap.plots.text(shap_values["end_shap_values"][0], display=False)
         )
 
-    if task == "Text Classification":
-        st.write("## Waterfall Plot")
-        output_names = shap_values["shap_values"].output_names
-        output_col, plot_col = st.columns([1, 3])
-        col = output_col.radio("Select one output", output_names)
-        with plot_col:
-            st_shap(
-                shap_bugs.waterfall(
-                    shap_values["shap_values"][0, :, col], show=False
-                )
-            )
 except ValueError as e:
     st.write(f"##### {str(e)}")
 except EnvironmentError as e:
