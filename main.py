@@ -37,19 +37,20 @@ def get_shap_values_and_predictions(task, model_path, inputs):
 
 st.title("Explainable Transformers")
 
-st.write("### Input your arguments")
-task = st.selectbox("Task", ["Text Classification", "Question Answering"])
-model_path = st.text_input(
-    "HuggingFace Model Path", "nateraw/bert-base-uncased-emotion"
-)
-if task == "Text Classification":
-    text = st.text_area("Enter input for model", "I am Happy!")
-    inputs = [text] if text else []
-elif task == "Question Answering":
-    question = st.text_area("Enter question")
-    context = st.text_area("Enter context")
+with st.sidebar:
+    st.write("### Input your arguments")
+    task = st.selectbox("Task", ["Text Classification", "Question Answering"])
+    model_path = st.text_input(
+        "HuggingFace Model Path", "nateraw/bert-base-uncased-emotion"
+    )
+    if task == "Text Classification":
+        text = st.text_area("Enter input for model")
+        inputs = [text] if text else []
+    elif task == "Question Answering":
+        question = st.text_area("Enter question")
+        context = st.text_area("Enter context")
 
-    inputs = [question + "[SEP]" + context] if question and context else []
+        inputs = [question + "[SEP]" + context] if question and context else []
 
 try:
     # Validation Conditions
