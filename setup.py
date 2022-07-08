@@ -4,6 +4,9 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+with open("requirements.txt", "r", encoding="utf-8") as fh:
+    requirements = fh.read().split('\n')
+
 setuptools.setup(
     name="Explainable Transformers",
     version="0.1.0",
@@ -18,15 +21,8 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "src"},
-    packages=setuptools.find_packages(where="src"),
+    package_dir={"": "explainable_transformers"},
+    packages=setuptools.find_packages(where="explainable_transformers"),
     python_requires=">=3.7",
-    install_requires=[
-        "numpy",
-        "shap",
-        "streamlit",
-        "transformers",
-        "torch",
-        "matplotlib",
-    ],
+    install_requires=requirements,
 )
