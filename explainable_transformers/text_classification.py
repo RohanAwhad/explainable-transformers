@@ -4,8 +4,10 @@ import shap
 from loguru import logger
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, pipeline
 
+from .base_explainer import BaseExplainer
 
-class TextClassificationExplainer:
+
+class TextClassificationExplainer(BaseExplainer):
     """Explains Text Classification models using SHAP"""
 
     def __init__(
@@ -14,17 +16,15 @@ class TextClassificationExplainer:
         model: AutoModelForSequenceClassification = None,
         tokenizer: AutoTokenizer = None,
     ):
-        if (
-            (model_path is None and (model is None or tokenizer is None))
-            or (model_path is not None and (model is not None or tokenizer is not None))
-            or (model_path is None and not (model is not None and tokenizer is not None))
-        ):
-            raise ValueError("either 'model_path' or 'model' and 'tokenizer' must be given but not both")
+        super().__init__(model_path=model_path, model=model, tokenizer=tokenizer)
 
         # load the model and tokenizer
         if model_path is not None:
+            logger.info(f"model path: '{model_path}'")
             tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True)
+            logger.info("tokenizer loaded")
             model = AutoModelForSequenceClassification.from_pretrained(model_path)
+            logger.info("model loaded")
 
         # build a pipeline object to do predictions
         self.pred = pipeline(
@@ -33,13 +33,16 @@ class TextClassificationExplainer:
             tokenizer=tokenizer,
             return_all_scores=True,
         )
+        logger.info("text classification pipeline loaded")
 
         self.explainer = shap.Explainer(self.pred)
+        logger.info("text classification explainer loaded")
 
     def get_shap_values(self, inputs):
         """
         Explains predictions of inputs using SHAP Explainer
         """
+        logger.debug(f"explaining output for : {inputs}")
         return self.explainer(inputs)
 
     def get_predictions(self, inputs):

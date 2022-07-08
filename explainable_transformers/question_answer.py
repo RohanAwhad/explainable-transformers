@@ -1,24 +1,27 @@
 import transformers
 import torch
 import shap
-import pandas as pd
 
 from typing import List
 
+from .base_explainer import BaseExplainer
 
-class QAExplainer:
+
+class QAExplainer(BaseExplainer):
     """Explains QA models using SHAP"""
 
-    def __init__(self, model_path):
-        self.tokenizer = transformers.AutoTokenizer.from_pretrained(
-            model_path, use_fast=True
-        )
-        self.model = transformers.AutoModelForQuestionAnswering.from_pretrained(
-            model_path
-        )
-        self.pipeline = transformers.QuestionAnsweringPipeline(
-            model=self.model, tokenizer=self.tokenizer
-        )
+    def __init__(self, model_path=None, model=None, tokenizer=None):
+        super().__init__(model_path=model_path, model=model, tokenizer=tokenizer)
+
+        # given the model_path load model and tokenizer
+        if model_path is not None:
+            self.tokenizer = transformers.AutoTokenizer.from_pretrained(model_path, use_fast=True)
+            self.model = transformers.AutoModelForQuestionAnswering.from_pretrained(model_path)
+        else:
+            self.tokenizer = tokenizer
+            self.model = model
+
+        self.pipeline = transformers.QuestionAnsweringPipeline(model=self.model, tokenizer=self.tokenizer)
 
         self._start_shap_func.__func__.output_names = self._out_names
         self._end_shap_func.__func__.output_names = self._out_names
@@ -46,9 +49,7 @@ class QAExplainer:
             question, context = data.split("[SEP]")
             d = self.tokenizer(question, context)
             with torch.no_grad():
-                out = self.model.forward(
-                    **{k: torch.tensor(d[k]).reshape(1, -1) for k in d}
-                )
+                out = self.model.forward(**{k: torch.tensor(d[k]).reshape(1, -1) for k in d})
             logits = out.start_logits if start else out.end_logits
             outs.append(logits.reshape(-1).detach().numpy())
         return outs
@@ -67,10 +68,7 @@ class QAExplainer:
     def get_predictions(self, inputs):
         question, context = inputs[0].split("[SEP]")
         predictions = self.pipeline(question=question, context=context)
-        print(predictions)
-        return pd.DataFrame(
-            {
-                "answer": [predictions["answer"]],
-                "score": [predictions["score"]],
-            }
-        )
+        return {
+            "answer": [predictions["answer"]],
+            "score": [predictions["score"]],
+        }
