@@ -22,9 +22,10 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires=">=3.7",
     install_requires=[
-        'numpy',
-        'shap',
-        'transformers',
-        'torch'
+        "loguru",
+        "numpy",
+        "shap",
+        "transformers",
+        "torch",
     ],
 )
