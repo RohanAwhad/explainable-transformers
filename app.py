@@ -1,4 +1,4 @@
-"""main.py"""
+"""app.py"""
 
 import matplotlib
 import shap
