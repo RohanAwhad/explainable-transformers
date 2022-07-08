@@ -1,13 +1,24 @@
 # Explainable Transformers
 
-To run
+Install by running following command:
 
 ```
-python3.7 -m venv env
-source env/bin/activate
-pip install -U pip setuptools wheel
-pip install -r requirements.txt
-streamlit run main.py
+pip install explainable-transformers==0.2.0
+```
+
+## Usage
+
+```
+from explainable_transformers.text_classification import TextClassificationExplainer
+
+model_path = "cardiffnlp/twitter-roberta-base-sentiment-latest"
+explainer = TextClassificationExplainer(model_path=model_path)
+
+inp = ["I like you. I love you."]
+shap_values = explainer.get_shap_values(inp)
+
+print(shap_values.base_values)
+print(shap_values.values)
 ```
 
 ## Future Scope:
@@ -28,14 +39,3 @@ streamlit run main.py
 
 -   Support for multiple model types and NLP tasks!
 
-## Output
-
-Package?
-
--   Access to classes is possible -> Collaborated Development
-
-Docker container?
-
--   Will provide a link to streamlit website -> Usage out of the box
-
-Or Both?
