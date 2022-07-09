@@ -23,7 +23,7 @@ setuptools.setup(
     python_requires=">=3.7",
     install_requires=[
         "loguru",
-        "numpy==1.21.6",
+        "numpy==1.22",
         "shap==0.41.0",
         "transformers==4.20.1",
         "torch==1.12.0",
