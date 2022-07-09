@@ -1,0 +1,4 @@
+SHAP requires tensor outputs from the classifier, and explanations works best in additive spaces, so we transform the probabilities into logit values (information values instead of probabilities)
+-- written by SHAP authors
+
+if 'p' is the probability, then odds = p/(1-p), and logit is log(odds).
